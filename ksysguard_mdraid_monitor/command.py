@@ -19,6 +19,7 @@ import time
 import typing
 
 from .argument_parser import Namespace
+from . import constants
 from .model import RaidStatus
 
 
@@ -105,7 +106,7 @@ class AbstractMonitor:
 
 
 class TotalDeviceCount(AbstractMonitor):
-
+    """Reports the total number of /dev/mdX RAID devices."""
     @property
     def command(self) -> str:
         return "SoftRaid/TotalDevices"
@@ -135,6 +136,99 @@ class TotalDeviceCount(AbstractMonitor):
         return None
 
 
+class ActiveDeviceCount(AbstractMonitor):
+    """Reports the total number of active and working RAID devices. Upper bound is the total device count."""
+    @property
+    def command(self) -> str:
+        return "SoftRaid/ActiveDevices"
+
+    @property
+    def command_value(self):
+        return self.parent.raid_status.active_device_count
+
+    @property
+    def output_type(self) -> str:
+        return "integer"
+
+    @property
+    def description(self):
+        return "Active device count"
+
+    @property
+    def min(self):
+        return 0
+
+    @property
+    def max(self):
+        return self.parent.raid_status.total_device_count
+
+    @property
+    def unit(self) -> typing.Optional[str]:
+        return None
+
+
+class FailedDeviceCount(AbstractMonitor):
+    """Reports the total number of inactive and failed RAID devices. Upper bound is the total device count."""
+    @property
+    def command(self) -> str:
+        return "SoftRaid/FailedDevices"
+
+    @property
+    def command_value(self):
+        return self.parent.raid_status.inactive_device_count
+
+    @property
+    def output_type(self) -> str:
+        return "integer"
+
+    @property
+    def description(self):
+        return "Failed device count"
+
+    @property
+    def min(self):
+        return 0
+
+    @property
+    def max(self):
+        return self.parent.raid_status.total_device_count
+
+    @property
+    def unit(self) -> typing.Optional[str]:
+        return None
+
+
+class TotalComponentCount(AbstractMonitor):
+    """Reports the total number of RAID components. This is the sum of all component devices of all RAID devices"""
+    @property
+    def command(self) -> str:
+        return "SoftRaid/TotalComponents"
+
+    @property
+    def command_value(self):
+        return self.parent.raid_status.total_component_count
+
+    @property
+    def output_type(self) -> str:
+        return "integer"
+
+    @property
+    def description(self):
+        return "Total component count"
+
+    @property
+    def min(self):
+        return 0
+
+    @property
+    def max(self):
+        return 0
+
+    @property
+    def unit(self) -> typing.Optional[str]:
+        return None
+
+
 class KSysGuardDaemon:
     """
     Implements the application main loop. Information about general commands were sourced from
@@ -147,11 +241,8 @@ class KSysGuardDaemon:
         self.command_table = self._build_command_table()
         self.prompt = "ksysguardd> "
         self.run_main_loop = True
-        self.raid_status = None
-        # Set the initial age to be older than the minimal interval. Causes the update to happen on
-        # the first iteration, replacing the None dummy value above
-        self.raid_status_age = time.monotonic_ns() - self.args.min_interval_ms * 1_000_000 * 2
-        self.main_loop()
+        self.raid_status: RaidStatus = RaidStatus()
+        self.raid_status_age = time.monotonic_ns()
 
     def _build_command_table(self) -> collections.defaultdict:
 
@@ -163,8 +254,19 @@ class KSysGuardDaemon:
             "quit": self.command_quit,
             "": lambda: (),  # Print nothing on empty input
         })
-        self.register_monitor(command_table, TotalDeviceCount)
+        for class_ in (
+                TotalDeviceCount, ActiveDeviceCount, FailedDeviceCount, TotalComponentCount,
+                ):
+            self.register_monitor(command_table, class_)
+
         return command_table
+
+    @staticmethod
+    def _print_header():
+        header = f"ksysguardd 4\n" \
+                 f"{constants.COPYRIGHT} <{constants.AUTHOR_EMAIL}>\n" \
+                 f"{constants.GPL_NOTICE}"
+        print(header)
 
     def register_monitor(self, command_table: collections.defaultdict, command_class: AbstractMonitor):
         cmd = command_class(self)
@@ -177,6 +279,7 @@ class KSysGuardDaemon:
             self.raid_status = RaidStatus()
 
     def main_loop(self):
+        self._print_header()
         while self.run_main_loop:
             try:
                 buffer = input(self.prompt)
@@ -199,7 +302,3 @@ class KSysGuardDaemon:
     def command_quit(self):
         """Break the main loop"""
         self.run_main_loop = False
-
-
-
-

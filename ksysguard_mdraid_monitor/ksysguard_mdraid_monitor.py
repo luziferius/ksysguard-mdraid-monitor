@@ -23,6 +23,7 @@ from .command import KSysGuardDaemon
 def main():
     args = parse_arguments()
     daemon = KSysGuardDaemon(args)
+    daemon.main_loop()
 
 
 if __name__ == "__main__": 

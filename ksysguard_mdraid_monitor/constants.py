@@ -19,3 +19,6 @@ __version__ = "0.0.1"
 PROGRAMNAME = "ksysguard_mdraid_monitor"
 VERSION = __version__
 COPYRIGHT = "(C) 2020 Thomas Hess"
+AUTHOR_EMAIL = "thomas.hess@udo.edu"
+GPL_NOTICE = "This program is licensed under the GNU GENERAL PUBLIC LICENSE Version 3.\n" \
+             "It is not affiliated with the KDE Project."
