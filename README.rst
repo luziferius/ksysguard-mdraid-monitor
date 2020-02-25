@@ -30,12 +30,12 @@ Usage within KSysGuard
 This is the recommended usage of this program. Instructions for integration into KSysGuard:
 
 - Open KSysGuard GUI
-- Click on ``File``→``Monitor Remote Machine…``
+- Click on ``File`` → ``Monitor Remote Machine…``
 - This opens a configuration dialogue window. Set these values:
-  - ``Host``: Enter a name under which the sensors become available in the sensor browser
-  - ``Connection Type``: Select ``Custom command``
-  - ``Command``: Enter either ``ksysguard_mdraid_monitor`` or the full path to ``ksysguard_mdraid_monitor-runner.py``
-  - Click OK
+   - ``Host``: Enter a name under which the sensors become available in the sensor browser
+   - ``Connection Type``: Select ``Custom command``
+   - ``Command``: Enter either ``ksysguard_mdraid_monitor`` or the full path to ``ksysguard_mdraid_monitor-runner.py``
+   - Click OK
 - The sensors will be available in the ``Sensor Browser`` when editing a Tab.
 
 
