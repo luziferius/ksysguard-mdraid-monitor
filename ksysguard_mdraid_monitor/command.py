@@ -198,6 +198,40 @@ class FailedDeviceCount(AbstractMonitor):
         return None
 
 
+class DegradedDeviceCount(AbstractMonitor):
+    """
+    Reports the total number of degraded RAID devices (that have missing components).
+    Upper bound is the total device count.
+    """
+    @property
+    def command(self) -> str:
+        return "SoftRaid/DegradedDevices"
+
+    @property
+    def command_value(self):
+        return self.parent.raid_status.degraded_device_count
+
+    @property
+    def output_type(self) -> str:
+        return "integer"
+
+    @property
+    def description(self):
+        return "Degraded device count"
+
+    @property
+    def min(self):
+        return 0
+
+    @property
+    def max(self):
+        return self.parent.raid_status.total_device_count
+
+    @property
+    def unit(self) -> typing.Optional[str]:
+        return None
+
+
 class TotalComponentCount(AbstractMonitor):
     """Reports the total number of RAID components. This is the sum of all component devices of all RAID devices"""
     @property

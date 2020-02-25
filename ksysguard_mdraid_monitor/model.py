@@ -125,5 +125,9 @@ class RaidStatus:
         return sum(1 for device in self.device_info if not device.is_active)
 
     @property
+    def degraded_device_count(self) -> int:
+        return sum(1 for device in self.device_info if device.current_device_count < device.expected_device_count)
+
+    @property
     def total_component_count(self) -> int:
         return sum(device.component_count for device in self.device_info)
