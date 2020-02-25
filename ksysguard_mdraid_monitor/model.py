@@ -47,17 +47,9 @@ bitmap_parser = re.compile(  # Parses the bitmap usage, for arrays that have it 
 class RaidDeviceInfo:
     """Groups information for a single MD device. Parses a single block from mdstat output."""
     def __init__(self, line_1: str, line_2: str, line_3: str = None, line_4: str = None):
-        line_1_result = header_parser.match(line_1)
-        self.md_device = line_1_result.group("md_device")
-        self.is_active = line_1_result.group("is_active") == "active"
-        self.raid_level = line_1_result.group("level")
-        self.component_devices = line_1_result.group("components").strip().split(" ")
-        line_2_result = block_parser.match(line_2)
-        self.block_count = int(line_2_result.group("block_count"))
-        self.superblock_format = line_2_result.group("superblock_format")
-        self.chunk_size = line_2_result.group("chunk_size")
-        self.expected_device_count = int(line_2_result.group("expected_device_count"))
-        self.current_device_count = int(line_2_result.group("current_device_count"))
+        self.md_device, self.is_active, self.raid_level, self.component_devices = self._parse_header_line(line_1)
+        self.block_count, self.superblock_format, self.chunk_size, self.expected_device_count, \
+            self.current_device_count = self._parse_block_count_line(line_2)
 
         print(line_1)
         print(line_2)
@@ -66,10 +58,41 @@ class RaidDeviceInfo:
 
         if line_3:
             if line_3.startswith("bitmap"):
-                pass
+                self._parse_bitmap_line(line_3)
             else:
                 # Recovery, resync or check in progress
-                pass
+                self._parse_activity_line(line_3)
+        
+        if line_4:
+            # Recovery, resync or check in progress, and the device has a bitmap
+            self._parse_bitmap_line(line_4)
+    
+    @staticmethod
+    def _parse_header_line(line_1: str):
+        line_1_result = header_parser.match(line_1)
+        md_device = line_1_result.group("md_device")
+        is_active = line_1_result.group("is_active") == "active"
+        raid_level = line_1_result.group("level")
+        component_devices = line_1_result.group("components").strip().split(" ")
+        return md_device, is_active, raid_level, component_devices
+    
+    @staticmethod
+    def _parse_block_count_line(line_2: str):
+        line_2_result = block_parser.match(line_2)
+        block_count = int(line_2_result.group("block_count"))
+        superblock_format = line_2_result.group("superblock_format")
+        chunk_size = line_2_result.group("chunk_size")
+        expected_device_count = int(line_2_result.group("expected_device_count"))
+        current_device_count = int(line_2_result.group("current_device_count"))
+        return block_count, superblock_format, chunk_size, expected_device_count, current_device_count
+
+    @staticmethod
+    def _parse_activity_line(line_3: str):
+        pass
+
+    @staticmethod
+    def _parse_bitmap_line(line_3: str):
+        pass
 
     @property
     def component_count(self) -> int:
