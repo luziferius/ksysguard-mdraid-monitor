@@ -51,10 +51,23 @@ class RaidDeviceInfo:
         self.md_device = line_1_result.group("md_device")
         self.is_active = line_1_result.group("is_active") == "active"
         self.raid_level = line_1_result.group("level")
-        self.component_devices = line_1_result.group("components").split(" ")
+        self.component_devices = line_1_result.group("components").strip().split(" ")
+        line_2_result = block_parser.match(line_2)
+        self.block_count = int(line_2_result.group("block_count"))
+        self.superblock_format = line_2_result.group("superblock_format")
+        self.chunk_size = line_2_result.group("chunk_size")
+        self.expected_device_count = int(line_2_result.group("expected_device_count"))
+        self.current_device_count = int(line_2_result.group("current_device_count"))
+
+        print(line_1)
+        print(line_2)
+        print(line_3)
+        print(line_4)
 
         if line_3:
-            if not line_3.startswith("bitmap"):
+            if line_3.startswith("bitmap"):
+                pass
+            else:
                 # Recovery, resync or check in progress
                 pass
 
