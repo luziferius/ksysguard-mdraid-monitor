@@ -91,7 +91,13 @@ class RaidStatus:
 
     @staticmethod
     def _should_skip_line(line: str) -> bool:
-        return line.startswith("Personalities") or line.startswith("unused devices:")
+        ignored_lines = [
+            "Personalities",
+            "read_ahead",  # Some platforms seem to output the global read-ahead as the second line
+            "unused devices:",
+
+        ]
+        return any(line.startswith(ignored) for ignored in ignored_lines)
 
     @property
     def total_device_count(self) -> int:
