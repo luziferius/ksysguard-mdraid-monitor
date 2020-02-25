@@ -6,10 +6,21 @@ It can be used to monitor MDRaid software RAID on Linux using the KDE system mon
 of MDRaid by itself, but only offers highly local and specific sensors. This program supplements the available sensors
 by offering aggregate sensors that provide a broader overview of the RAID health.
 
+Current development state
+-------------------------
+
+The program works on the developer’s machine, but there are no unit tests that verify the parsing of ``/proc/mdstat`` for all possible situations. Consider it to be in an early alpha state. It currently offers only very basic sensors:
+
+- Total number of RAID arrays in the system (``/dev/mdX``)
+- Active/healthy number of RAID arrays
+- Inactive/failed number of RAID arrays
+- Aggregate total number of RAID component devices across all arrays
+
+
 Requirements
 ------------
 
-- Python >= 3.7 (3.6 may work, but is untested)
+- Python >= 3.7 (3.6 may work, but is untested. <=3.5 is definitely unsupported)
 - Linux with mounted ``/proc`` file system. ``/proc/mdstat`` present in ``/proc``.
 
 Install
@@ -37,6 +48,7 @@ This is the recommended usage of this program. Instructions for integration into
    - ``Command``: Enter either ``ksysguard_mdraid_monitor`` or the full path to ``ksysguard_mdraid_monitor-runner.py``
    - Click OK
 - The sensors will be available in the ``Sensor Browser`` when editing a Tab.
+- Drag at least one sensor into a tab. Otherwise the connection will be removed when closing KSysGuard, as KSysGuard discards unused, external monitors on exit.
 
 
 Direct usage
