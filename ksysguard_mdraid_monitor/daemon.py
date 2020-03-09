@@ -17,9 +17,8 @@ import collections
 import inspect
 import time
 
-from ksysguard_mdraid_monitor import constants
+from ksysguard_mdraid_monitor import command, constants
 from ksysguard_mdraid_monitor.argument_parser import Namespace
-from ksysguard_mdraid_monitor import command
 from ksysguard_mdraid_monitor.model import RaidStatus
 
 

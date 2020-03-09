@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from .argument_parser import parse_arguments
+from ksysguard_mdraid_monitor.argument_parser import parse_arguments
 from ksysguard_mdraid_monitor.daemon import KSysGuardDaemon
 
 
