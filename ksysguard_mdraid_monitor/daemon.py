@@ -87,16 +87,25 @@ class KSysGuardDaemon:
         self._print_header()
         while self.run_main_loop:
             try:
-                # ksysguardd ignores trailing whitespace
-                buffer = input(self.prompt).rstrip()
+                read_command = input(self.prompt)
             except EOFError:
                 self.command_quit()
                 continue
             self._read_raid_status()
-            if buffer.lstrip() != buffer:
-                # ksysguardd returns empty output when a command begins with whitespace. Emulate this behaviour.
-                buffer = ""
-            self.command_table[buffer]()
+            read_command = self._preprocess_input_command(read_command)
+            self.command_table[read_command]()
+
+    @staticmethod
+    def _preprocess_input_command(read_command: str) -> str:
+        # ksysguardd ignores trailing whitespace
+        read_command = read_command.rstrip()
+        if read_command.lstrip() != read_command:
+            # ksysguardd returns empty output when a command begins with whitespace. Emulate this behaviour.
+            read_command = ""
+        if read_command:
+            # ksysguardd splits the input at whitespace characters and ignores all but the first group.
+            read_command = read_command.split()[0]
+        return read_command
 
     @staticmethod
     def command_not_found_error():
