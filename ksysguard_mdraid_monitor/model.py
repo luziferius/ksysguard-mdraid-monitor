@@ -191,3 +191,19 @@ class RaidStatus:
     @property
     def total_bitmap_page_count(self) -> int:
         return sum(device.bitmap_total_pages for device in self.device_info)
+
+    @property
+    def in_maintenance_device_count(self):
+        return sum(device.current_activity != "idle" for device in self.device_info)
+
+    @property
+    def in_check_device_count(self):
+        return sum(device.current_activity == "check" for device in self.device_info)
+
+    @property
+    def in_resync_device_count(self):
+        return sum(device.current_activity == "resync" for device in self.device_info)
+
+    @property
+    def in_recovery_device_count(self):
+        return sum(device.current_activity == "recovery" for device in self.device_info)

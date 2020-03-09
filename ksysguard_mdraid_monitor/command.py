@@ -132,7 +132,7 @@ class TotalDeviceCount(AbstractMonitor):
         return "integer"
 
     @property
-    def description(self):
+    def description(self) -> str:
         return "Total device count"
 
     @property
@@ -163,7 +163,7 @@ class ActiveDeviceCount(AbstractMonitor):
         return "integer"
 
     @property
-    def description(self):
+    def description(self) -> str:
         return "Active device count"
 
     @property
@@ -194,7 +194,7 @@ class FailedDeviceCount(AbstractMonitor):
         return "integer"
 
     @property
-    def description(self):
+    def description(self) -> str:
         return "Failed device count"
 
     @property
@@ -228,8 +228,145 @@ class DegradedDeviceCount(AbstractMonitor):
         return "integer"
 
     @property
-    def description(self):
+    def description(self) -> str:
         return "Degraded device count"
+
+    @property
+    def min(self):
+        return 0
+
+    @property
+    def max(self):
+        return self.parent.raid_status.total_device_count
+
+    @property
+    def unit(self) -> typing.Optional[str]:
+        return None
+
+
+class InMaintenanceDeviceCount(AbstractMonitor):
+    """
+    Reports the total number of active RAID devices (that currently perform any kind of maintenance task).
+    Upper bound is the total device count.
+    """
+    @property
+    def command(self) -> str:
+        return "SoftRaid/Active/InMaintenanceDevices"
+
+    @property
+    def command_value(self):
+        return self.parent.raid_status.in_maintenance_device_count
+
+    @property
+    def output_type(self) -> str:
+        return "integer"
+
+    @property
+    def description(self) -> str:
+        return "Devices performing maintenance operations"
+
+    @property
+    def min(self):
+        return 0
+
+    @property
+    def max(self):
+        return self.parent.raid_status.total_device_count
+
+    @property
+    def unit(self) -> typing.Optional[str]:
+        return None
+
+
+class InCheckDeviceCount(AbstractMonitor):
+    """
+    Reports the total number of  RAID devices that currently perform a routine check.
+    Upper bound is the total device count.
+    """
+    @property
+    def command(self) -> str:
+        return "SoftRaid/Active/InCheckDevices"
+
+    @property
+    def command_value(self):
+        return self.parent.raid_status.in_check_device_count
+
+    @property
+    def output_type(self) -> str:
+        return "integer"
+
+    @property
+    def description(self) -> str:
+        return "Devices performing a routine check"
+
+    @property
+    def min(self):
+        return 0
+
+    @property
+    def max(self):
+        return self.parent.raid_status.total_device_count
+
+    @property
+    def unit(self) -> typing.Optional[str]:
+        return None
+
+
+class InResyncDeviceCount(AbstractMonitor):
+    """
+    Reports the total number of  RAID devices that currently perform a re-sync. This mostly happens due to system
+    crashes or power losses.
+    Upper bound is the total device count.
+    """
+    @property
+    def command(self) -> str:
+        return "SoftRaid/Active/InResyncDevices"
+
+    @property
+    def command_value(self):
+        return self.parent.raid_status.in_resync_device_count
+
+    @property
+    def output_type(self) -> str:
+        return "integer"
+
+    @property
+    def description(self) -> str:
+        return "Devices performing a resync"
+
+    @property
+    def min(self):
+        return 0
+
+    @property
+    def max(self):
+        return self.parent.raid_status.total_device_count
+
+    @property
+    def unit(self) -> typing.Optional[str]:
+        return None
+
+
+class InRecoveryDeviceCount(AbstractMonitor):
+    """
+    Reports the total number of  RAID devices that currently perform a data recovery.
+    Upper bound is the total device count.
+    """
+    @property
+    def command(self) -> str:
+        return "SoftRaid/Active/InRecoveryDevices"
+
+    @property
+    def command_value(self):
+        return self.parent.raid_status.in_recovery_device_count
+
+    @property
+    def output_type(self) -> str:
+        return "integer"
+
+    @property
+    def description(self) -> str:
+        return "Devices performing a recovery"
 
     @property
     def min(self):
@@ -262,7 +399,7 @@ class BitmapDeviceCount(AbstractMonitor):
         return "integer"
 
     @property
-    def description(self):
+    def description(self) -> str:
         return "Bitmap device count"
 
     @property
@@ -296,7 +433,7 @@ class BitmapPageUsage(AbstractMonitor):
         return "integer"
 
     @property
-    def description(self):
+    def description(self) -> str:
         return "Total bitmap usage"
 
     @property
@@ -327,7 +464,7 @@ class TotalComponentCount(AbstractMonitor):
         return "integer"
 
     @property
-    def description(self):
+    def description(self) -> str:
         return "Total component count"
 
     @property
