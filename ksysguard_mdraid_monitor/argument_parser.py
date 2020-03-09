@@ -16,6 +16,8 @@
 import argparse
 import typing
 
+import ksysguard_mdraid_monitor.constants
+
 
 class NonNegativeInt(int):
     def __new__(cls, *args, **kwargs):
@@ -42,6 +44,11 @@ def generate_argument_parser() -> argparse.ArgumentParser:
         help="Minimal delay between querying /proc/mdstat in milliseconds. This delay avoids unnecessary re-parsing "
              "of /proc/mdstat if multiple values are requested by KSysGuard in quick succession. Defaults to "
              "%(default)i ms. Requires a non-negative integer."
+    )
+    parser.add_argument(
+        '-V', '--version',
+        action='version',
+        version=f'%(prog)s {ksysguard_mdraid_monitor.constants.__version__}'
     )
     return parser
 
