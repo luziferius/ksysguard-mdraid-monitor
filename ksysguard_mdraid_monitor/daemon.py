@@ -14,6 +14,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import collections
+import inspect
 import time
 
 from ksysguard_mdraid_monitor import constants
@@ -47,12 +48,23 @@ class KSysGuardDaemon:
             "quit": self.command_quit,
             "": lambda: (),  # Print nothing on empty input
         })
-        for class_ in (
-                command.TotalDeviceCount, command.ActiveDeviceCount, command.FailedDeviceCount, command.TotalComponentCount,
-                ):
+        for class_ in self._get_all_monitor_classes():
             self.register_monitor(command_table, class_)
 
         return command_table
+
+    @staticmethod
+    def _get_all_monitor_classes():
+        all_monitor_classes = map(
+            lambda member: member[1],
+            inspect.getmembers(
+                command, predicate=lambda obj:
+                    # issubclass(A, A) is True, therefore manually remove the abstract base class
+                    inspect.isclass(obj) and
+                    issubclass(obj, command.AbstractMonitor) and
+                    obj is not command.AbstractMonitor)
+        )
+        return all_monitor_classes
 
     @staticmethod
     def _print_header():
