@@ -87,11 +87,15 @@ class KSysGuardDaemon:
         self._print_header()
         while self.run_main_loop:
             try:
-                buffer = input(self.prompt)
+                # ksysguardd ignores trailing whitespace
+                buffer = input(self.prompt).rstrip()
             except EOFError:
                 self.command_quit()
                 continue
             self._read_raid_status()
+            if buffer.lstrip() != buffer:
+                # ksysguardd returns empty output when a command begins with whitespace. Emulate this behaviour.
+                buffer = ""
             self.command_table[buffer]()
 
     @staticmethod
