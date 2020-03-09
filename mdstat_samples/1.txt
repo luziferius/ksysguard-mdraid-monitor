@@ -1,0 +1,15 @@
+Personalities : [raid1]
+read_ahead 1024 sectors
+md5 : active raid1 sdb5[1] sda5[0]
+      4200896 blocks [2/2] [UU]
+
+md6 : active raid1 sdb6[1] sda6[0]
+      2104384 blocks [2/2] [UU]
+
+md7 : active raid1 sdb7[1] sda7[0]
+      2104384 blocks [2/2] [UU]
+
+md2 : active raid1 sdc7[1] sdd8[2] sde5[0]
+      1052160 blocks [2/2] [UU]
+
+unused devices: none

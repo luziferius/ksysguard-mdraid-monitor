@@ -1,0 +1,7 @@
+Personalities : [raid1]
+md0 : active raid1 sdb[1] sda[0]
+    1953383488 blocks super 1.2 [2/2] [UU]
+    [>....................]  resync =  0.9% (19054272/1953383488) finish=213.6min speed=150885K/sec
+    bitmap: 15/15 pages [60KB], 65536KB chunk
+
+unused devices: <none>
