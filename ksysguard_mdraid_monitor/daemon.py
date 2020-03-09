@@ -89,10 +89,10 @@ class KSysGuardDaemon:
                 read_command = input(self.prompt)
             except EOFError:
                 self.command_quit()
-                continue
-            self._read_raid_status()
-            read_command = self._preprocess_input_command(read_command)
-            self.command_table[read_command]()
+            else:
+                self._read_raid_status()
+                read_command = self._preprocess_input_command(read_command)
+                self.command_table[read_command]()
 
     @staticmethod
     def _preprocess_input_command(read_command: str) -> str:
