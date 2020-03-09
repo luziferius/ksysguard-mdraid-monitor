@@ -21,16 +21,30 @@ if typing.TYPE_CHECKING:
 
 
 class AbstractMonitor:
-
+    """
+    Abstract base class that implements a monitor.
+    It provides a working implementation for:
+     - listing the monitor in the "monitors" command
+     - the info command "sensor_name?". Default implementation is only suitable for scalar monitors!
+     - reading the monitor value via "sensor_name" command
+    To implement a monitor, provide an implementation for all abstract properties.
+    If the value of a monitor does not have a unit, return None for self.unit
+    To implement a "listview" type (a table), overwrite self.command_info() to provide the required table header
+    and units.
+    """
     def __init__(self, parent):
         self.parent: KSysGuardDaemon = parent
 
     @property
     def command_monitor_output(self) -> str:
+        """Lists this command when executing the "monitors" command."""
         return f"{self.command}\t{self.output_type}"
 
     def command_info(self):
-        """Implements the info command "sensor_name?" that returns the value range and unit of this command."""
+        """
+        Implements the info command "sensor_name?" that returns the value range and unit of this command.
+        The implementation is suitable for scalar monitors only.
+        """
         if self.unit is None:
             result = f"{self.description}\t{self.min}\t{self.max}"
         else:
@@ -61,13 +75,14 @@ class AbstractMonitor:
     def output_type(self) -> str:
         """
         Used by the "monitors" command.
-        Returns a string representation of the output type
+        Returns a string representation of the output type.
+        Suitable values are "string", "integer", "float", "listview" and possibly others.
         """
         pass
 
     @property
     @abstractmethod
-    def description(self):
+    def description(self) -> str:
         """
         Used by the info command (f"{self.command}?").
         Returns a short descriptive name displayed by KSysGuard
@@ -282,7 +297,7 @@ class BitmapPageUsage(AbstractMonitor):
 
     @property
     def description(self):
-        return "Total bitmap page usage"
+        return "Total bitmap usage"
 
     @property
     def min(self):
