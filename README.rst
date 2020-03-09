@@ -9,11 +9,18 @@ by offering aggregate sensors that provide a broader overview of the RAID health
 Current development state
 -------------------------
 
-The program works on the developer’s machine, but there are no unit tests that verify the parsing of ``/proc/mdstat`` for all possible situations. Consider it to be in an early alpha state. It currently offers only very basic sensors:
+The program works on the developer’s machine, but there are no unit tests that verify the parsing
+of ``/proc/mdstat`` for all possible situations.
+Consider it to be in an early alpha state. It currently offers only very basic sensors:
 
 - Total number of RAID arrays in the system (``/dev/mdX``)
-- Active/healthy number of RAID arrays
-- Inactive/failed number of RAID arrays
+- Number of active/healthy RAID arrays
+- Number of inactive/failed RAID arrays
+- Number of degraded RAID arrays
+- Number of arrays enqueued for any kind of maintenance task
+- Number of arrays enqueued for a specific maintenance task (check, re-sync, recovery)
+- Number of arrays with bitmaps
+- Bitmap page usage across all arrays with bitmaps
 - Aggregate total number of RAID component devices across all arrays
 
 
@@ -71,7 +78,7 @@ When started, the program outputs a prompt for command input: ``ksysguardd>``. Y
 +-------------------+---------------------------------------------------------------------------------------------+------------------------------------------------------+
 | monitors          | List all available sensors, one per line                                                    | ``<sensor_name>\t<sensor_unit>``                     |
 +-------------------+---------------------------------------------------------------------------------------------+------------------------------------------------------+
-|``<sensor_name>``  | One of the sensor names from ```monitors`` output. Prints the raw sensor value without unit | ``<raw_output_value>``                               |
+|``<sensor_name>``  | One of the sensor names from ``monitors`` output. Prints the raw sensor value without unit  | ``<raw_output_value>``                               |
 +-------------------+---------------------------------------------------------------------------------------------+------------------------------------------------------+
 |``<sensor_name?>`` | Information about the sensor: short name/description, minimum value, maximum value and unit | ``<text>\t<min_value>\t<max_value>\t<sensor_unit>``  |
 +-------------------+---------------------------------------------------------------------------------------------+------------------------------------------------------+
