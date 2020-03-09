@@ -263,6 +263,40 @@ class BitmapDeviceCount(AbstractMonitor):
         return None
 
 
+class BitmapPageUsage(AbstractMonitor):
+    """
+    Reports the total number of RAID devices having bitmaps.
+    Upper bound is the total device count.
+    """
+    @property
+    def command(self) -> str:
+        return "SoftRaid/BitmapPageUsage"
+
+    @property
+    def command_value(self):
+        return self.parent.raid_status.total_bitmap_page_usage
+
+    @property
+    def output_type(self) -> str:
+        return "integer"
+
+    @property
+    def description(self):
+        return "Total bitmap page usage"
+
+    @property
+    def min(self):
+        return 0
+
+    @property
+    def max(self):
+        return self.parent.raid_status.total_bitmap_page_count
+
+    @property
+    def unit(self) -> typing.Optional[str]:
+        return "pages"
+
+
 class TotalComponentCount(AbstractMonitor):
     """Reports the total number of RAID components. This is the sum of all component devices of all RAID devices"""
     @property

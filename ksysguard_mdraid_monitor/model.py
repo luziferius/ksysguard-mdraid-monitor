@@ -80,7 +80,7 @@ class RaidDeviceInfo:
             self.has_bitmap = True
             self.bitmap_used_pages, self.bitmap_total_pages, self.bitmap_used_size_kb, self.bitmap_chunk_size_kb = \
                 self._parse_bitmap_line(line_4)
-    
+
     @staticmethod
     def _parse_header_line(header_line: str):
         header_result = header_parser.match(header_line)
@@ -183,3 +183,11 @@ class RaidStatus:
     @property
     def bitmap_device_count(self) -> int:
         return sum(1 for device in self.device_info if device.has_bitmap)
+
+    @property
+    def total_bitmap_page_usage(self) -> int:
+        return sum(device.bitmap_used_pages for device in self.device_info)
+
+    @property
+    def total_bitmap_page_count(self) -> int:
+        return sum(device.bitmap_total_pages for device in self.device_info)
